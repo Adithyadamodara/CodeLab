@@ -11,3 +11,50 @@ API skeletion
     e. main.py - API Entry point (has a create_job function, it only creates a job from models.py and generates a job id)
     f. Backend API never executes heavy work directly
     g. They : recieve request --> create job --> delegate execution 
+
+PHASE 2
+
+RUNNING SANDBOX ENVIRONMENT
+Redix queueing to be implemented in a later phase
+
+Basic Controlflow
+
+Frontend --> FastAPI Backend --> Docker Runner --> Isolated Container --> Capture stdout / stderr
+
+Details:
+
+
+Steps:
+
+1. Install and check docker SDK
+2. Created runners subfolder in backend for docker runner file
+3. Docker runner file creates an isolated workspace (new temp dir) with a file script.py (for python currently) and
+docker runs - docker run python:3.11-slim python script.py with a volume mount. app/script.py.
+4. This container is automatically removed.
+5. Updated executor.py to call run_python_code from docker_runners.py. 
+6. Added main.py to to call execute function from executor.py 
+
+Testing:
+1. Tested multiple codes, output is visible, observed docker image creation and deletion.
+2. Issues: infinite loops dont get found, the code executes forever, and image doesnt shutdown, also observed that the fastapi server on uvicorn wont shutdown unless all connections are stopped - here the docker container - as long as container runs the server will need to be forced to shutdown. Regular termination of server will keep it running as long as connection is active on the frontend, as soon as connection stops the server will also stop.
+
+Issue: Need to implement protections against malicious codes to prevent containers running forever.
+
+
+Protections to be implemented:
+1. Timeout - Infinite loops
+2. Memory limit - prevent RAM exhaustion
+3. CPU limit - prevent CPU Hogging
+4. Network disabled - prevent internet access
+5. Read-only filesystem - prevents file abuse
+6. Container auto-remove - prevent buildup
+
+Steps:
+
+1. Updating docker_runner.py
+2. Added limitations for CPU, RAM, disabled network access, added execution timeout and set it to 3 seconds.
+
+ISSUE: (Resource Leak) Identified issue where for cases where execution times out the docker image still persists
+Soln: Added exceptions to kill container on execution timeout. On container.wait() -> if execution time excessed EXECUTION_TIMEOUT value,
+Exception is called and container is killed forcefully.
+
