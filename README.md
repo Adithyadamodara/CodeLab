@@ -40,6 +40,7 @@ Testing:
 
 Issue: Need to implement protections against malicious codes to prevent containers running forever.
 
+PHASE 3
 
 Protections to be implemented:
 1. Timeout - Infinite loops
@@ -57,4 +58,24 @@ Steps:
 ISSUE: (Resource Leak) Identified issue where for cases where execution times out the docker image still persists
 Soln: Added exceptions to kill container on execution timeout. On container.wait() -> if execution time excessed EXECUTION_TIMEOUT value,
 Exception is called and container is killed forcefully.
+
+
+
+PHASE 4
+
+Implemention Queue based execution
+
+System:
+
+Frontend --> FastAPI --> Redis queue --> Worker Service --> Docker Service
+
+Exe flow:
+
+1. User -> POST/Execute
+2. API pushes job to Redis 
+3. API returns job_id immediately
+4. Worker pulls job 
+5. Worker runs Docker container
+6. Worker stores result
+7. Frontend requests result
 
