@@ -79,3 +79,19 @@ Exe flow:
 6. Worker stores result
 7. Frontend requests result
 
+Redis setup on VM
+(Fedora):
+
+1. sudo dnf install redis
+2. sudo systemctl start redis
+3. sudo system ctl enable redis ( to start redis on boot )
+4. redis-cli ping (verifying)
+5. ip addr (get vm ip address)
+
+Backend device setup:
+
+1. pip install redis
+2. On backed foldre create new folder 'queue' to run redis script (redis_queue.py)
+3. Also create another folder 'worker' on backend folder with worker.py script
+4. Create redis queue in redis_queue.py file, using rpush() and blpop() methods of redis module
+5. Here blpop() blocks execution i.e., initates wait. It waits until the execution is complete and output is returned. 
