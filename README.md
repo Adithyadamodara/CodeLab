@@ -95,3 +95,9 @@ Backend device setup:
 3. Also create another folder 'worker' on backend folder with worker.py script
 4. Create redis queue in redis_queue.py file, using rpush() and blpop() methods of redis module
 5. Here blpop() blocks execution i.e., initates wait. It waits until the execution is complete and output is returned. 
+
+On backend folder:
+1. executor.py now creates jobs instead of executing them
+2. main.py(API) now creates an API call (doesn't execute anything right now) instead of directly executing python.
+3. worker.py fetches jobs from redis db (queue) and sends for execution and stores result in redis again as (RESULT_PREFIX + job_id, output)
+4. Updated main.py to retrieve result from redis queue. 
