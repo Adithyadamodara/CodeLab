@@ -101,3 +101,17 @@ On backend folder:
 2. main.py(API) now creates an API call (doesn't execute anything right now) instead of directly executing python.
 3. worker.py fetches jobs from redis db (queue) and sends for execution and stores result in redis again as (RESULT_PREFIX + job_id, output)
 4. Updated main.py to retrieve result from redis queue. 
+
+Issue:
+
+1. Issue where vm was hid behind host and couldnt access the vm for redis queue
+
+Soln: 
+
+Changed vm settings to allow port fowarding. 
+Config:
+Name: Redis,
+host ip: left empty
+host port: 6379
+guest ip: left empty
+guest port: 6379

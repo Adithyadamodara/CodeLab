@@ -6,7 +6,7 @@ import redis
 app = FastAPI()
 
 redis_client = redis.Redis(
-    host="10.0.2.15",
+    host="127.0.0.1",
     port="6379",
     decode_responses=True
 )

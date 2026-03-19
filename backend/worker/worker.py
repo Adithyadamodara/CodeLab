@@ -1,11 +1,11 @@
-from queue.redis_queue import pop_job
-from runners.docker_runner import run_python_code
+from backend.queue.redis_queue import pop_job
+from backend.runners.docker_runner import run_python_code
 
 import redis
 import json
 
 redis_client = redis.Redis(
-    host="10.0.2.15",
+    host="127.0.0.1",
     port=6379,
     decode_responses=True
 )
