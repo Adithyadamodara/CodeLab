@@ -108,10 +108,22 @@ Issue:
 
 Soln: 
 
-Changed vm settings to allow port fowarding. 
-Config:
-Name: Redis,
-host ip: left empty
-host port: 6379
-guest ip: left empty
-guest port: 6379
+Changed VM network settings:
+1. On Adapter 1 - attach to - NAT 
+2. On Adapter 2 - attach to - Host-only adapter
+3. check by pinging
+
+
+2. For making Fedora act like a server:
+
+soln:
+1. sudo dnf install openssh-server -y
+2. sudo systemctl start sshd
+3. sudo systemctl enable sshd
+
+for allowing ssh through firewall:
+1. sudo firewall-cmd --permanent --add-service=ssh
+2. sudo firewall-cmd --reload
+
+Now the VM can be accessed like a server:
+1. ssh username@192.168.56.101
