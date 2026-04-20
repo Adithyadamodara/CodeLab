@@ -43,12 +43,57 @@ PHASE 2:
 - Pod creation and deletion via api
 - Resource constraints in place
 
+- Make sure to start minikube and run backend api before running commands.
 Bash command to check /create-lab:
 curl -X POST http://127.0.0.1:5000/create-lab \
 -H "Content-Type: application/json" \
 -d "{\"user\":\"adi\",\"lab_type\":\"python\"}"
+powershell-
+curl -Method POST http://127.0.0.1:5000/create-lab `
+-Headers @{"Content-Type"="application/json"} `
+-Body '{"user":"adi","lab_type":"python"}'
+
+Verify pod creation:
+kubectl get pods
+
+Enter into created pod:
+kubectl exec -it adi-python-xxxxx -- bash
 
 Bash command to delete pod:
 curl -X POST http://127.0.0.1:5000/delete-lab \
 -H "Content-Type: application/json" \
 -d "{\"pod_name\":\"adi-python-xxxxx\"}"  # replace xxxxx with actual number
+powershell-
+
+PHASE 3:
+
+- Track active lab sessions
+- Prevent duplicate sessions
+- Store pod ownership
+- Support expiry
+
+Step 1- Start redis:
+docker run -d -p 6379:6379 --name redis redis:7
+
+verify: docker ps
+
+Step 2- Install Redis Client:
+pip install redis
+
+Step 3- Updated app.py with redis integration
+
+Step 4- Enforcing single session per user and with user-session id mapping 
+updated create-lab in app.py
+updated delete-lab in app.py
+
+Run to check:
+curl -Method POST http://127.0.0.1:5000/create-lab `
+-Headers @{"Content-Type"="application/json"} `
+-Body '{"user":"adi","lab_type":"python"}'
+
+try again for same user to get error
+
+delete lab- 
+curl -Method POST http://127.0.0.1:5000/delete-lab `
+-Headers @{"Content-Type"="application/json"} `
+-Body '{"user":"adi"}'
