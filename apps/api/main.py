@@ -1,7 +1,9 @@
 from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 from kubernetes import client, config
 import requests
+import httpx  # async client for streaming
 import time
 
 app = FastAPI()
@@ -104,3 +106,30 @@ async def execute_code(user_id: str, payload: CodePayload):
         return response.json()
     except requests.exceptions.ConnectionError:
         raise HTTPException(status_code=503, detail="Pod is not ready or port-forwarding is not active.")
+
+@app.websocket("/ws/execute/{user_id}")
+async def we_execute(websocket: WebSocket, user_id: str):
+    await websocket.accept()
+    try:
+        while True:
+            # Recieving payload from IDE
+            data = await websocket.receive_json()
+            code = data.get("code", "")
+
+            # Local kind tunnel routing, pod_id for AWS
+            pod_url = "http://127.0.0.1:5000/run"
+
+            # Opening a streaming connection to the pod
+            async with httpx.AsyncClient() as client:
+                async with client.stream("POST", pod_url, json={"code": code}, timeout=None) as response:
+                    async for line in response.aiter_lines():
+                        # Pushing every line instantly to the browser terminal
+                        await websocket.send_json({"output": line})
+
+            # Execution completion
+            await websocket.send_json({"output": "\n Execution complete."})
+
+    except WebSocketDisconnect:
+        print(f" User {user_id} Disconnected from WebSocket.")
+    except Exception as e:
+        await websocket.send_json({"output": f"Internal Server Error: {str(e)}"})

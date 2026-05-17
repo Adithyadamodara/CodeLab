@@ -75,22 +75,15 @@ def run_pipeline():
     )
     time.sleep(3) # Give the tunnel time to open
 
-    print("💻 [5/5] Executing Test Code...")
-    test_code = {
-        "code": "def solve(arr):\n    return sum(arr)\n\nprint(f'Sum is: {solve([1, 2, 3, 4, 5])}')"
-    }
-    
+    print("💻 [5/5] Pipeline Ready!")
+    print("================================================================")
+    print("✅ Kubernetes Pod is running and port-forwarding is established.")
+    print("ctrl+C to exit")
     try:
-        result = requests.post(f"http://127.0.0.1:8000/execute/{user_id}", json=test_code, timeout=5).json()
-        print("\n" + "="*40)
-        print("🎯 EXECUTION RESULT:")
-        print(f"Stdout: {result.get('stdout', '').strip()}")
-        if result.get('stderr'):
-            print(f"Stderr: {result.get('stderr', '').strip()}")
-        print(f"Exit Code: {result.get('exit_code')}")
-        print("="*40)
-    except Exception as e:
-        print(f"❌ Execution failed: {e}")
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        pass # Cleanup is handled by atexit
 
 if __name__ == "__main__":
     run_pipeline()
