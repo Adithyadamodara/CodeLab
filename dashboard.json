@@ -1,0 +1,74 @@
+{
+  "title": "CodeLab Metrics",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Active Sessions",
+      "targets": [
+        {
+          "expr": "active_lab_sessions",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Total Executions",
+      "targets": [
+        {
+          "expr": "total_executions",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Pod CPU Usage (Cores)",
+      "targets": [
+        {
+          "expr": "pod_cpu_usage_cores",
+          "legendFormat": "{{user_id}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Pod Memory Usage (Bytes)",
+      "targets": [
+        {
+          "expr": "pod_memory_usage_bytes",
+          "legendFormat": "{{user_id}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      }
+    }
+  ],
+  "schemaVersion": 36,
+  "timezone": "browser",
+  "refresh": "5s"
+}
